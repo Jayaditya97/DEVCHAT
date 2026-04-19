@@ -20,15 +20,26 @@ It supports user authentication, one-to-one messaging, and conversation manageme
 
 ## 📂 Project Structure
 
-```
 backend/
-  config/
-  models/
-  routes/
-  middleware/
-  data/
-  server.js
-```
+  config/        # DB connection & utilities
+  controllers/   # (optional logic layer)
+  data/          # dummy/test data
+  middleware/    # auth middleware
+  models/        # Mongoose schemas
+  routes/        # API routes
+  server.js      # entry point
+
+---
+
+## 📁 Folder Structure Explanation
+
+- **config/** → Database connection and utilities
+- **controllers/** → Business logic (currently minimal)
+- **data/** → Static/dummy data used for testing
+- **middleware/** → Authentication middleware (JWT)
+- **models/** → MongoDB schemas (User, Message, Conversation)
+- **routes/** → API endpoints
+- **server.js** → Main entry point
 
 ---
 
