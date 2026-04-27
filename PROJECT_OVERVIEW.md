@@ -35,6 +35,35 @@ MongoDB Database
 
 ---
 
+## ⚡ Real-Time Communication (Socket.IO)
+
+The application now supports real-time messaging using Socket.IO.
+
+### Flow:
+
+Client sends message via socket  
+→ Backend receives event  
+→ Message saved in MongoDB  
+→ Server broadcasts message to all connected clients  
+
+### Implementation Details:
+
+- Socket.IO integrated with Express server
+- Messages handled via `send_message` event
+- Messages stored using Mongoose models
+- Real-time updates without page refresh
+
+### Current Limitations:
+
+- No user authentication in sockets (JWT integration pending)
+- No conversation-based filtering (all users receive messages)
+
+### Planned Enhancements:
+
+- JWT-based socket authentication
+- Socket rooms for conversation-level messaging
+- Typing indicators
+
 ## 🧩 Core Modules
 
 ### 1. User Module
@@ -190,7 +219,7 @@ npm install
 2. Add environment variables:
 
 ```
-PORT=3000
+PORT=5000
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_secret
 ```
@@ -248,7 +277,7 @@ This project demonstrates:
 * Database modeling
 * Scalable chat system design
 
-This forms the foundation of modern messaging applications.
+This project now includes both REST API-based communication and real-time messaging using Socket.IO, forming a strong foundation for a full-scale chat application.
 
 ---
 

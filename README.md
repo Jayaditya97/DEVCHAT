@@ -53,6 +53,23 @@ backend/
 * MongoDB database integration
 * Secure sender identification using JWT
 
+## ⚡ Real-Time Chat (Socket.IO)
+
+This project now includes real-time messaging using Socket.IO.
+
+### Features:
+- Instant message delivery between clients
+- Multi-user communication (via browser tabs)
+- Messages are stored in MongoDB and broadcasted in real-time
+
+### Current Limitation:
+- All connected users receive all messages (no room-based filtering yet)
+- Sender is temporarily hardcoded (JWT integration pending)
+
+### Next Improvements:
+- JWT authentication for sockets
+- Conversation-based message delivery (Socket Rooms)
+
 ---
 
 ## 📡 API Endpoints
@@ -109,12 +126,14 @@ npm start
 
 ---
 
-## 🧠 Future Improvements
+## 🧠 Future Improvements (Version 2)
 
-* Real-time messaging (Socket.IO)
-* Group chats
-* Image & GIF support
-* Chat search functionality
+- JWT authentication for Socket.IO
+- Conversation-based real-time messaging (rooms)
+- Group chat system
+- Image & GIF sharing
+- Chat search functionality
+- Frontend (React)
 
 ---
 
@@ -122,6 +141,10 @@ npm start
 
 Version 1 Backend Completed
 Next: Real-time chat using Socket.IO
+
+## ⚠️ Security Note
+
+The `.env` file is excluded from version control to protect sensitive data such as database credentials and JWT secrets.
 
 ---
 
