@@ -11,14 +11,25 @@
 <button onclick="sendMessage()">Send</button>
 
 <ul id="messages"></ul>
+<p id="typing"></p>
 
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
 <script>
-  const socket = io("http://localhost:5000");
+ const token = prompt("Paste your JWT token");
+ const conversationId = prompt(
+  "Enter conversation ID"
+);
+
+const socket = io("http://localhost:5000", {
+  auth: {
+    token: token,
+  },
+});
 
   socket.on("connect", () => {
     console.log("Connected:", socket.id);
+    socket.emit("join_room", conversationId);
   });
 
   function sendMessage() {
@@ -26,9 +37,9 @@
     const message = input.value;
 
     socket.emit("send_message", {
-        conversationId: "69c6b5f6c3e156d3d282fab6", //temp id will replace 
-        content: message
-    });
+  conversationId,
+  content: message,
+});
 
     input.value = "";
   }
@@ -36,9 +47,54 @@
 socket.on("receive_message", (message) => {
   const li = document.createElement("li");
 
-  li.textContent = message.content; // ✅ show actual text
+  li.textContent = message.content; // show actual text
 
   document.getElementById("messages").appendChild(li);
+});
+
+socket.on("online_users", (users) => {
+  console.log("Online Users:", users);
+});
+
+socket.on("user_typing", (data) => {
+
+  document.getElementById(
+    "typing"
+  ).innerText =
+    `${data.user} is typing...`;
+
+});
+
+socket.on("user_stop_typing", () => {
+
+  document.getElementById(
+    "typing"
+  ).innerText = "";
+
+});
+
+const input = document.getElementById(
+  "messageInput"
+);
+
+input.addEventListener("input", () => {
+
+  socket.emit(
+    "typing",
+    conversationId
+  );
+
+  clearTimeout(window.typingTimeout);
+
+  window.typingTimeout = setTimeout(() => {
+
+    socket.emit(
+      "stop_typing",
+      conversationId
+    );
+
+  }, 1000);
+
 });
 
 </script>

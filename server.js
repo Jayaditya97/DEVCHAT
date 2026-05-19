@@ -4,6 +4,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const jwt = require("jsonwebtoken");
+const User = require("./models/User");
+const path = require("path");
 
 dotenv.config();
 
@@ -21,17 +24,32 @@ const conversationRoutes = require("./routes/conversationRoutes.js");
 const authRoutes = require("./routes/authRoutes");
 const Message = require("./models/Message");
 const Conversation = require("./models/Conversation");
+const { createMessage } = require("./controllers/messageController");
+const pageRoutes = require("./routes/pageRoutes");
 
+app.set("view engine", "ejs");
+app.set(
+  "views",
+  path.join(__dirname, "views")
+);
 
 app.get("/", (req, res) => {
-  res.send("API running");
+  res.render("home");
 });
-
+app.use("/", pageRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/conversations",conversationRoutes);
 app.use("/api/auth", authRoutes);
+app.use(
+  "/uploads",
+  express.static("public/uploads")
+);
+
+app.use(
+  express.static("frontend")
+);
 
 const PORT = 5000;
 
@@ -54,37 +72,115 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake.auth.token;
+
+    if (!token) {
+      return next(new Error("No token"));
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    const user = await User.findById(decoded.id)
+      .select("-password");
+
+    if (!user) {
+      return next(new Error("User not found"));
+    }
+
+    socket.user = user;
+
+    next();
+
+  } catch (error) {
+    next(new Error("Authentication error"));
+  }
+});
+
+const onlineUsers = new Map();
+
 io.on("connection", (socket) => {
+
+  onlineUsers.set(
+  socket.user._id.toString(),
+  socket.id
+);
+
+console.log(
+  "Online Users:",
+  Array.from(onlineUsers.keys())
+);
+
+io.emit(
+  "online_users",
+  Array.from(onlineUsers.keys())
+);
+
   console.log("User connected:", socket.id);
 
-  socket.on("send_message", async (data) => {
-    try {
-      const { conversationId, content } = data;
+  socket.on("join_room", (conversationId) => {
 
-      // TEMP sender (we'll replace with JWT later)
-      const sender = "69a85d1fd6a47eb8bad03ff4"; //temp user id will replace 
+  socket.join(conversationId);
 
-      const newMessage = new Message({
-        conversation: conversationId,
-        sender: sender,
-        content: content,
-      });
+  console.log(
+    `${socket.user.name} joined room ${conversationId}`
+  );
 
-      const savedMessage = await newMessage.save();
+});
 
-      await Conversation.findByIdAndUpdate(conversationId, {
-        lastMessage: content,
-        updatedAt: new Date(),
-      });
+socket.on("typing", (conversationId) => {
 
-      io.emit("receive_message", savedMessage);
-
-    } catch (error) {
-      console.log(error.message);
+  socket.to(conversationId).emit(
+    "user_typing",
+    {
+      user: socket.user.name,
     }
-  });
+  );
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-  });
+});
+
+socket.on("stop_typing", (conversationId) => {
+
+  socket.to(conversationId).emit(
+    "user_stop_typing"
+  );
+
+});
+
+socket.on("send_message", (data) => {
+
+  const message = {
+    sender: {
+      name: socket.user.name,
+    },
+
+    content: data.content,
+  };
+
+  io.to(data.conversationId)
+    .emit("receive_message", message);
+
+});
+
+ socket.on("disconnect", () => {
+
+  onlineUsers.delete(
+    socket.user._id.toString()
+  );
+
+  console.log(
+    "User disconnected:",
+    socket.user.name
+  );
+
+  io.emit(
+    "online_users",
+    Array.from(onlineUsers.keys())
+  );
+});
+
 });

@@ -4,28 +4,18 @@ const router = express.Router();
 const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
 const { protect } = require("../middleware/authMiddleware");
+const { createMessage } = require("../controllers/messageController");
 
 // CREATE message
 router.post("/", protect, async (req, res) => {
   try {
-    const message = new Message({
-      conversation: req.body.conversation,
+    const message = await createMessage({
       sender: req.user._id,
       content: req.body.content,
+      conversationId: req.body.conversation,
     });
 
-    const saved = await message.save();
-
-    // update last message
-    await Conversation.findByIdAndUpdate(
-      req.body.conversation,
-      {
-        lastMessage: req.body.content,
-        updatedAt: new Date(),
-      }
-    );
-
-    res.status(201).json(saved);
+    res.status(201).json(message);
 
   } catch (error) {
     res.status(500).json({
