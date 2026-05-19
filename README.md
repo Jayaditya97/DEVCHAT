@@ -1,153 +1,334 @@
-# 💬 DevChat Backend (MERN Chat Application)
+# DevChat — Real-Time Chat Application
 
-## 🚀 Overview
+DevChat is a full-stack real-time chat application built using Node.js, Express, MongoDB, Socket.IO, JWT Authentication, and Vanilla JavaScript.
 
-This is a backend-focused chat application built using the MERN stack.
-It supports user authentication, one-to-one messaging, and conversation management.
+The project supports:
+
+* Real-time messaging
+* JWT authentication
+* Online users tracking
+* Typing indicators
+* Socket.IO rooms
+* SSR pages using EJS
+* MongoDB database integration
 
 ---
 
-## 🛠️ Tech Stack
+# 🚀 Features
+
+## Authentication
+
+* User Registration
+* User Login
+* JWT Token Authentication
+* Protected Socket Connections
+* Protected API Routes
+
+## Real-Time Communication
+
+* Socket.IO Integration
+* Live Messaging
+* Room-Based Messaging
+* Typing Indicators
+* Online Users Tracking
+
+## Frontend
+
+* EJS SSR Pages
+* Vanilla HTML/CSS/JS Chat UI
+* Real-Time Message Rendering
+* Logout Functionality
+
+## Backend
+
+* Express Server
+* REST APIs
+* MongoDB Atlas Integration
+* Mongoose Models
+* Middleware Architecture
+
+---
+
+# 🛠️ Tech Stack
+
+## Backend
 
 * Node.js
 * Express.js
 * MongoDB Atlas
 * Mongoose
-* JWT Authentication
+* Socket.IO
+* JWT
 * bcryptjs
+* dotenv
+* cors
+
+## Frontend
+
+* HTML
+* CSS
+* JavaScript
+* EJS
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
+```text
 backend/
-  config/        # DB connection & utilities
-  controllers/   # (optional logic layer)
-  data/          # dummy/test data
-  middleware/    # auth middleware
-  models/        # Mongoose schemas
-  routes/        # API routes
-  server.js      # entry point
-
----
-
-## 📁 Folder Structure Explanation
-
-- **config/** → Database connection and utilities
-- **controllers/** → Business logic (currently minimal)
-- **data/** → Static/dummy data used for testing
-- **middleware/** → Authentication middleware (JWT)
-- **models/** → MongoDB schemas (User, Message, Conversation)
-- **routes/** → API endpoints
-- **server.js** → Main entry point
-
----
-
-## 🔐 Features
-
-* User Registration & Login (JWT)
-* Password hashing (bcrypt)
-* Protected routes
-* One-to-one conversations
-* Messaging system
-* MongoDB database integration
-* Secure sender identification using JWT
-
-## ⚡ Real-Time Chat (Socket.IO)
-
-This project now includes real-time messaging using Socket.IO.
-
-### Features:
-- Instant message delivery between clients
-- Multi-user communication (via browser tabs)
-- Messages are stored in MongoDB and broadcasted in real-time
-
-### Current Limitation:
-- All connected users receive all messages (no room-based filtering yet)
-- Sender is temporarily hardcoded (JWT integration pending)
-
-### Next Improvements:
-- JWT authentication for sockets
-- Conversation-based message delivery (Socket Rooms)
-
----
-
-## 📡 API Endpoints
-
-### Auth
-
-* POST /api/auth/register
-* POST /api/auth/login
-
-### Users
-
-* GET /api/users
-
-### Conversations
-
-* POST /api/conversations
-* GET /api/conversations
-
-### Messages
-
-* POST /api/messages
-* GET /api/messages/:conversationId
-
----
-
-## ⚙️ Setup Instructions
-
-### 1. Clone the repo
-
+│
+├── config/
+│   └── db.js
+│
+├── controllers/
+│
+├── data/
+│   └── chats.js
+│
+├── frontend/
+│   ├── chat.html
+│   ├── chat.css
+│   └── chat.js
+│
+├── middleware/
+│   └── authMiddleware.js
+│
+├── models/
+│   ├── User.js
+│   ├── Conversation.js
+│   └── Message.js
+│
+├── routes/
+│   ├── authRoutes.js
+│   ├── chatRoutes.js
+│   ├── conversationRoutes.js
+│   ├── messageRoutes.js
+│   ├── pageRoutes.js
+│   └── userRoutes.js
+│
+├── views/
+│   ├── home.ejs
+│   ├── login.ejs
+│   └── register.ejs
+│
+├── .env
+├── .gitignore
+├── package.json
+├── README.md
+└── server.js
 ```
-git clone https://github.com/your-username/devchat-backend.git
+
+---
+
+# ⚙️ Installation
+
+## 1. Clone Repository
+
+```bash
+git clone YOUR_REPOSITORY_URL
+```
+
+## 2. Enter Project Directory
+
+```bash
 cd backend
 ```
 
-### 2. Install dependencies
+## 3. Install Dependencies
 
-```
+```bash
 npm install
 ```
 
-### 3. Create .env file
+---
 
-```
+# 🔐 Environment Variables
+
+Create a `.env` file inside backend directory.
+
+```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+MONGO_URI=YOUR_MONGODB_URI
+JWT_SECRET=YOUR_SECRET_KEY
 ```
 
-### 4. Run server
+---
 
-```
+# ▶️ Run Project
+
+## Development Mode
+
+```bash
 npm start
 ```
 
----
+Server runs on:
 
-## 🧠 Future Improvements (Version 2)
-
-- JWT authentication for Socket.IO
-- Conversation-based real-time messaging (rooms)
-- Group chat system
-- Image & GIF sharing
-- Chat search functionality
-- Frontend (React)
+```text
+http://localhost:5000
+```
 
 ---
 
-## 📌 Status
+# 🌐 Application Routes
 
-Version 1 Backend Completed
-Next: Real-time chat using Socket.IO
+## SSR Pages
 
-## ⚠️ Security Note
-
-The `.env` file is excluded from version control to protect sensitive data such as database credentials and JWT secrets.
+| Route        | Description      |
+| ------------ | ---------------- |
+| `/`          | Home Page        |
+| `/login`     | Login Page       |
+| `/register`  | Register Page    |
+| `/chat.html` | Chat Application |
 
 ---
 
-## 🙌 Author
+# 🔌 API Routes
 
-Jayaditya Nagpal
+## Authentication
+
+| Method | Route                |
+| ------ | -------------------- |
+| POST   | `/api/auth/register` |
+| POST   | `/api/auth/login`    |
+
+## Messages
+
+| Method | Route                           |
+| ------ | ------------------------------- |
+| GET    | `/api/messages/:conversationId` |
+| POST   | `/api/messages`                 |
+
+## Conversations
+
+| Method | Route                        |
+| ------ | ---------------------------- |
+| POST   | `/api/conversations`         |
+| GET    | `/api/conversations/:userId` |
+
+---
+
+# ⚡ Socket.IO Events
+
+## Client → Server
+
+| Event          |
+| -------------- |
+| `join_room`    |
+| `send_message` |
+| `typing`       |
+| `stop_typing`  |
+
+## Server → Client
+
+| Event              |
+| ------------------ |
+| `receive_message`  |
+| `online_users`     |
+| `user_typing`      |
+| `user_stop_typing` |
+
+---
+
+# 🧠 System Architecture
+
+```text
+Client Browser
+      ↓
+EJS / HTML / CSS / JS Frontend
+      ↓
+Socket.IO + REST APIs
+      ↓
+Express.js Backend
+      ↓
+MongoDB Atlas
+```
+
+---
+
+# 🔄 Data Flow
+
+## Authentication Flow
+
+```text
+User Login/Register
+        ↓
+Server validates credentials
+        ↓
+JWT Token generated
+        ↓
+Token stored in localStorage
+        ↓
+Authenticated requests enabled
+```
+
+## Messaging Flow
+
+```text
+User sends message
+        ↓
+Socket.IO emits event
+        ↓
+Server receives message
+        ↓
+Room broadcast happens
+        ↓
+Connected clients receive message instantly
+```
+
+## Typing Indicator Flow
+
+```text
+User types message
+        ↓
+Frontend emits typing event
+        ↓
+Server broadcasts typing status
+        ↓
+Other users see typing indicator
+```
+
+---
+
+# 🔒 Security Features
+
+* JWT Authentication
+* Protected Routes Middleware
+* Protected Socket Connections
+* bcrypt Password Hashing
+* Environment Variables using dotenv
+
+---
+
+# 🚀 Deployment
+
+## Backend Deployment
+
+* Render
+
+## Database
+
+* MongoDB Atlas
+
+The frontend is served directly from the Express backend.
+
+---
+
+# 📌 Current MVP Features
+
+✅ User Authentication
+✅ Real-Time Chat
+✅ Online Users
+✅ Typing Indicators
+✅ Socket Rooms
+✅ JWT Socket Authentication
+✅ SSR Pages using EJS
+✅ Vanilla JS Frontend
+✅ MongoDB Integration
+
+---
+
+# 👨‍💻 Author
+
+DevChat Project
+Built for learning full-stack real-time application development.
